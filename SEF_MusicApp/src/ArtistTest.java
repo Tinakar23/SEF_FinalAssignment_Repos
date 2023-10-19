@@ -23,7 +23,7 @@ public class ArtistTest
 			Genres.add("Jazz");
 			ArrayList<String> Awards = new ArrayList<String>();
 			Awards.add("1999,69th film fare awards");
-			Awards.add("2002,69th film fare awards");
+			Awards.add("2002,25th film fare awards");
 	        return Stream.of(
 	            Arguments.of("567NNNRR_%", "Case1",  "Melbourne|Victoria|Australia","25-06-1999", "Sample bio for the test data 1 which contains 10 words", occupation,Genres, Awards),  
 	            Arguments.of("987ABCDE@#", "Case1",  "Melbourne|Victoria|Australia","25-06-2023", "Sample bio for the test data 2 which contains 10 words", occupation,Genres, Awards)  
