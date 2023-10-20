@@ -162,8 +162,8 @@ public class ArtistTest
 		  static Stream<Arguments> testDataOfUpdateArtistCase1() 
 		  {		  
 				ArrayList<String> occupation = new ArrayList<String>();
-				occupation.add("Lyricist");
-				occupation.add("Musician");
+				occupation.add("Singer");
+				occupation.add("Producer");
 				ArrayList<String> Genres = new ArrayList<String>();
 				ArrayList<String> Awards = new ArrayList<String>();
 		        return Stream.of(

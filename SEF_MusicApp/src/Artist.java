@@ -226,22 +226,25 @@ public class Artist {
 	}
 
 	public boolean Update() {
-		try {
-			FileWriter fileWriter = new FileWriter("fileName.txt", true);
-			BufferedWriter writer = new BufferedWriter(fileWriter);
-			Scanner scanner = new Scanner(new File("fileName.txt"));
+
+		boolean isUpdated = false;
+		try 
+		{
+			Scanner scanner = new Scanner(new File("updatedFile.txt"));
 			int Birthdate = 0;
+			boolean isMatchedData = false;
 			// scanner.nextLine(); // Skip the first line
 
 			StringBuilder newContent = new StringBuilder();
 			String newContentString = "Occuption: ";
 			List<String> awardTitle = new ArrayList<String>();
-			boolean isUpdated = false;
 			while (scanner.hasNextLine()) 
 			{
 				String line = scanner.nextLine();
-				if(line.startsWith("ID"))
+				if(line.startsWith("ID") )
 				{
+					String Id = line.substring(line.indexOf(": ") + 2);
+					isMatchedData = (Id.equals(this.ID)) ? true : false;
 					newContent.append(line).append("\n");					
 				}
 				if(line.startsWith("Name"))
@@ -250,7 +253,7 @@ public class Artist {
 				}
 				if(line.startsWith("Bio"))
 				{
-					if( this.Bio != "" )
+					if( this.Bio != ""  && isMatchedData)
 					{
 						if(this.validateBio(false))
 						{
@@ -273,7 +276,7 @@ public class Artist {
 				{
 					String birthDate = line.substring(line.indexOf(": ") + 2);
 					Birthdate = this.GetYear(birthDate);
-					if(this.Birthdate != "")
+					if(this.Birthdate != "" && isMatchedData)
 					{
 						if(this.validBirthDate())
 						{							
@@ -294,7 +297,7 @@ public class Artist {
 				}
 				if(line.startsWith("Address"))
 				{
-					if(this.Address != "")
+					if(this.Address != "" && isMatchedData)
 					{
 						if(this.validAddress(false))
 						{							
@@ -315,7 +318,7 @@ public class Artist {
 				}
 				if(line.startsWith("Genres"))
 				{
-					if(!this.Genres.isEmpty())
+					if(!this.Genres.isEmpty() && isMatchedData)
 					{
 						if(this.validateGenres(false))
 						{
@@ -334,9 +337,9 @@ public class Artist {
 						newContent.append(line).append("\n");
 					}
 				}
-				if ( line.startsWith("Award")) 
+				if ( line.startsWith("Award") && isMatchedData) 
 				{
-					if(this.Awards != null && !this.Awards.isEmpty())
+					if(this.Awards != null && !this.Awards.isEmpty() && isMatchedData)
 					{
 						if(!this.validateAwards(false))
 						{
@@ -376,7 +379,7 @@ public class Artist {
 				}
 				if (line.startsWith("Occupation")) 
  				{
-					if(!this.Occupations.isEmpty())
+					if(!this.Occupations.isEmpty() && isMatchedData)
 					{
 						if(!this.validateOccupation(false))
 						{
@@ -397,15 +400,22 @@ public class Artist {
 					{
 						newContent.append(line).append("\n");
 					}
-				} 
+				}
 			}
 
-			writer.write(newContent.toString());
-			writer.close();
-		} catch (IOException e) {
+			if(isUpdated)
+			{			
+				FileWriter fileWriter = new FileWriter("updatedFile.txt", false);
+				BufferedWriter writer = new BufferedWriter(fileWriter);
+				writer.write(newContent.toString());
+				writer.close();
+			}
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
-		return true;
+		return isUpdated;
 	}
 	private int GetYear(String birthDate)
 	{
