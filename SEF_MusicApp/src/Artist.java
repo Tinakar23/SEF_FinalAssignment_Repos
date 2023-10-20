@@ -226,11 +226,11 @@ public class Artist {
 	}
 
 	public boolean Update() {
-		Date converted_birthDate = new Date();
 		try {
 			FileWriter fileWriter = new FileWriter("fileName.txt", true);
 			BufferedWriter writer = new BufferedWriter(fileWriter);
 			Scanner scanner = new Scanner(new File("fileName.txt"));
+			int Birthdate = 0;
 			// scanner.nextLine(); // Skip the first line
 
 			StringBuilder newContent = new StringBuilder();
@@ -240,68 +240,164 @@ public class Artist {
 			while (scanner.hasNextLine()) 
 			{
 				String line = scanner.nextLine();
-				if (this.Awards != null && !this.Awards.isEmpty()&& line.startsWith("Award")) 
+				if(line.startsWith("ID"))
 				{
-					if(!this.validateAwards(false))
-					{
-						isUpdated = false;
-						break;
-					}
-					
-					for (String award : this.Awards) 
-					{
-						String[] awardParts = award.split(",");
-						awardTitle.add(awardParts[1]);
-					}
-
-					String[] awardTitleArray = awardTitle.toArray(new String[awardTitle.size()]);
-					String[] parts = line.substring(line.indexOf(": ") + 2).split("\\|");
-					for (int i = 0; i < parts.length; i++) {
-						String part = parts[i];
-						String[] subParts = part.split(",");
-
-						if (subParts.length == 2 && Integer.parseInt(subParts[0]) > 2000) 
-						{
-							subParts[1] = awardTitleArray[i];
-						}
-						newContentString += String.join(",", subParts) + "|";
-					}
-					newContentString = newContentString.substring(0, newContentString.length() - 1);
-					newContent.append(String.join("|", newContentString)).append("\n");
-					isUpdated = true;
+					newContent.append(line).append("\n");					
 				}
-				
-				if (!this.Occupations.isEmpty() && line.startsWith("Occupation")) 
+				if(line.startsWith("Name"))
 				{
-					if(!this.validateOccupation(false))
+					newContent.append(line).append("\n");
+				}
+				if(line.startsWith("Bio"))
+				{
+					if( this.Bio != "" )
 					{
-						isUpdated = false;
-						break;
+						if(this.validateBio(false))
+						{
+						String newBioLine = "Bio: " + this.Bio +"\n";
+						newContent.append(newBioLine).append("\n");
+						isUpdated = true;
+						}
+						else
+						{
+							isUpdated = false;
+							break;
+						}
 					}
-					SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-					try 
+					else
 					{
-						converted_birthDate = dateFormat.parse(this.Birthdate);
-					} 
-					catch (ParseException e) 
-					{
-						// Handle parsing error
+						newContent.append(line).append("\n");
 					}
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(converted_birthDate);
-					if (calendar.get(Calendar.YEAR) > 2000) 
+				}
+				if(line.startsWith("Birthdate"))
+				{
+					String birthDate = line.substring(line.indexOf(": ") + 2);
+					Birthdate = this.GetYear(birthDate);
+					if(this.Birthdate != "")
 					{
-						newContent.append("new Occupation\n");
+						if(this.validBirthDate())
+						{							
+						String newBirthdate = "Birthdate: " + this.Birthdate + "\n";
+						newContent.append(newBirthdate).append("\n");
+						isUpdated = true;
+						}
+						else
+						{
+							isUpdated = false;
+							break;
+						}
+					}
+					else
+					{
+						newContent.append(line).append("\n");
+					}
+				}
+				if(line.startsWith("Address"))
+				{
+					if(this.Address != "")
+					{
+						if(this.validAddress(false))
+						{							
+						String newAddress = "Address: " + this.Address + "\n";
+						newContent.append(newAddress).append("\n");
+						isUpdated = true;
+						}
+						else
+						{
+							isUpdated = false;
+							break;
+						}
+					}
+					else
+					{
+						newContent.append(line).append("\n");
+					}
+				}
+				if(line.startsWith("Genres"))
+				{
+					if(!this.Genres.isEmpty())
+					{
+						if(this.validateGenres(false))
+						{
+							String newGenres = "Genres: "+ this.Genres +"\n";
+							newContent.append(newGenres).append("\n");
+							isUpdated = true;
+						}
+						else
+						{
+							isUpdated = false;
+							break;
+						}
+					}
+					else
+					{
+						newContent.append(line).append("\n");
+					}
+				}
+				if ( line.startsWith("Award")) 
+				{
+					if(this.Awards != null && !this.Awards.isEmpty())
+					{
+						if(!this.validateAwards(false))
+						{
+							isUpdated = false;
+							break;
+						}
+						else
+						{
+							for (String award : this.Awards) 
+							{
+								String[] awardParts = award.split(",");
+								awardTitle.add(awardParts[1]);
+							}
+
+							String[] awardTitleArray = awardTitle.toArray(new String[awardTitle.size()]);
+							String[] parts = line.substring(line.indexOf(": ") + 2).split("\\|");
+							for (int i = 0; i < parts.length; i++) 
+							{
+								String part = parts[i];
+								String[] subParts = part.split(",");
+
+								if (subParts.length == 2 && Integer.parseInt(subParts[0]) > 2000) 
+								{
+									subParts[1] = awardTitleArray[i];
+								}
+								newContentString += String.join(",", subParts) + "|";
+							}
+							newContentString = newContentString.substring(0, newContentString.length() - 1);
+							newContent.append(String.join("|", newContentString)).append("\n");
+							isUpdated = true;
+						}
+					}
+					else	
+					{
+						newContent.append(line).append("\n");
+					}
+				}
+				if (line.startsWith("Occupation")) 
+ 				{
+					if(!this.Occupations.isEmpty())
+					{
+						if(!this.validateOccupation(false))
+						{
+							isUpdated = false;
+							break;
+						}
+						else
+						{
+							
+							if (Birthdate > 2000) 
+							{
+								newContent.append("Occupation: "+String.join(",", this.Occupations)+"\n");
+								isUpdated = true;
+							}							
+						}
 					}
 					else 
 					{
 						newContent.append(line).append("\n");
 					}
 				} 
-				
-				else {
-					newContent.append(line).append("\n");
-				}
 			}
 
 			writer.write(newContent.toString());
@@ -311,6 +407,24 @@ public class Artist {
 		}
 		return true;
 	}
+	private int GetYear(String birthDate)
+	{
+		Date converted_birthDate = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		try 
+		{
+			converted_birthDate = dateFormat.parse(birthDate);
+		} 
+		catch (ParseException e) 
+		{
+			// 	Handle parsing error
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(converted_birthDate);
+		return calendar.get(Calendar.YEAR);
+	}
 }
+
+
 
 //https://stackoverflow.com/questions/12970484/java-for-loop-with-an-arraylist

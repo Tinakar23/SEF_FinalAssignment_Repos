@@ -11,8 +11,11 @@ import org.junit.jupiter.api.Test;
 
 public class ArtistTest 
 {
+
+/// Test cases for the function Add Artist.
+	
 	////Valid input
-	  static Stream<Arguments> testDataOfCase1() 
+	  static Stream<Arguments> testDataOfAddArtistCase1() 
 	  {		  
 			ArrayList<String> occupation = new ArrayList<String>();
 			occupation.add("Singer");
@@ -31,7 +34,7 @@ public class ArtistTest
 	    }
 	  
 	  ////Invalid artist id
-	  static Stream<Arguments> testDataOfCase2() 
+	  static Stream<Arguments> testDataOfAddArtistCase2() 
 	  {		  
 			ArrayList<String> occupation = new ArrayList<String>();
 			occupation.add("Singer");
@@ -55,7 +58,7 @@ public class ArtistTest
 	    }
 	  
 	  ////Invalid birth date
-	  static Stream<Arguments> testDataOfCase3() 
+	  static Stream<Arguments> testDataOfAddArtistCase3() 
 	  {		  
 			ArrayList<String> occupation = new ArrayList<String>();
 			occupation.add("Singer");
@@ -76,7 +79,7 @@ public class ArtistTest
 	    }
 	  
 	  ////Invalid bio
-	  static Stream<Arguments> testDataOfCase4() 
+	  static Stream<Arguments> testDataOfAddArtistCase4() 
 	  {		  
 			ArrayList<String> occupation = new ArrayList<String>();
 			occupation.add("Singer");
@@ -98,7 +101,7 @@ public class ArtistTest
 	    }
 	  
 	  	////Invalid Awards
-		static Stream<Arguments> testDataOfCase5() 
+		static Stream<Arguments> testDataOfAddArtistCase5() 
 		{		  
 			ArrayList<String> occupation = new ArrayList<String>();
 			occupation.add("Singer");
@@ -132,7 +135,7 @@ public class ArtistTest
 	    }
 		
 		 ////Invalid Active Genres
-		  static Stream<Arguments> testDataOfCase6() 
+		  static Stream<Arguments> testDataOfAddArtistCase6() 
 		  {		  
 				ArrayList<String> occupation = new ArrayList<String>();
 				occupation.add("Singer");
@@ -154,10 +157,24 @@ public class ArtistTest
 		            Arguments.of("987ABCDE@#", "Case1",  "Melbourne|Victoria|Australia","25-06-2023", "Sample bio for the test data 2 which contains 10 words", occupation,GenresCase2, Awards)  
 		        );
 		    }
-	 
+		  
+/// Test cases for the function Update artist method
+		  static Stream<Arguments> testDataOfUpdateArtistCase1() 
+		  {		  
+				ArrayList<String> occupation = new ArrayList<String>();
+				occupation.add("Lyricist");
+				occupation.add("Musician");
+				ArrayList<String> Genres = new ArrayList<String>();
+				ArrayList<String> Awards = new ArrayList<String>();
+		        return Stream.of(
+		        	////Data where there is only one active genre for the artist
+		            Arguments.of("987ABCDE@#", "",  "","", "", occupation,Genres, Awards) 
+		              
+		        );
+		    }
 	
 	@ParameterizedTest
-	@MethodSource("testDataOfCase1")
+	@MethodSource("testDataOfAddArtistCase1")
 	@DisplayName("Test Add Artist with valid input")
 	void testAddArtist_TestCase1(String ArtistID,  String Name, String Address, String Birthdate,String Bio, ArrayList<String> Occupations, ArrayList<String> Genres, ArrayList<String> Awards) 
 	{
@@ -169,7 +186,7 @@ public class ArtistTest
 	
 	
 	@ParameterizedTest
-	@MethodSource("testDataOfCase2")
+	@MethodSource("testDataOfAddArtistCase2")
 	@DisplayName("Test Add Artist with invalid Artist ID")
 	void testAddArtist_TestCase2(String ArtistID,  String Name, String Address, String Birthdate,String Bio, ArrayList<String> Occupations, ArrayList<String> Genres, ArrayList<String> Awards) 
 	{
@@ -179,7 +196,7 @@ public class ArtistTest
 	}
 	
 	@ParameterizedTest
-	@MethodSource("testDataOfCase3")
+	@MethodSource("testDataOfAddArtistCase3")
 	@DisplayName("Test Add Artist with invalid date format of birthdate")
 	void testAddArtist_TestCase3(String ArtistID,  String Name, String Address, String Birthdate,String Bio, ArrayList<String> Occupations, ArrayList<String> Genres, ArrayList<String> Awards) 
 	{
@@ -189,7 +206,7 @@ public class ArtistTest
 	}
 	
 	@ParameterizedTest
-	@MethodSource("testDataOfCase4")
+	@MethodSource("testDataOfAddArtistCase4")
 	@DisplayName("Test Add Artist with invalid bio")
 	void testAddArtist_TestCase4(String ArtistID,  String Name, String Address, String Birthdate,String Bio, ArrayList<String> Occupations, ArrayList<String> Genres, ArrayList<String> Awards) 
 	{
@@ -199,7 +216,7 @@ public class ArtistTest
 	}
 
 	@ParameterizedTest
-	@MethodSource("testDataOfCase5")
+	@MethodSource("testDataOfAddArtistCase5")
 	@DisplayName("Test Add Artist with invalid awards")
 	void testAddArtist_TestCase5(String ArtistID,  String Name, String Address, String Birthdate,String Bio, ArrayList<String> Occupations, ArrayList<String> Genres, ArrayList<String> Awards) 
 	{
@@ -209,8 +226,8 @@ public class ArtistTest
 	}
 	
 	@ParameterizedTest
-	@MethodSource("testDataOfCase6")
-	@DisplayName("Test Add Artist with invalid sctive genres")
+	@MethodSource("testDataOfAddArtistCase6")
+	@DisplayName("Test Add Artist with invalid active genres")
 	void testAddArtist_TestCase6(String ArtistID,  String Name, String Address, String Birthdate,String Bio, ArrayList<String> Occupations, ArrayList<String> Genres, ArrayList<String> Awards) 
 	{
 		Artist TestData1 = new Artist(ArtistID, Name, Address, Birthdate, Bio, Occupations, Genres, Awards);
@@ -218,6 +235,16 @@ public class ArtistTest
 		Assert.assertTrue(data == false);
 	}
 
+
+	@ParameterizedTest
+	@MethodSource("testDataOfUpdateArtistCase1")
+	@DisplayName("Test Add Artist with invalid sctive genres")
+	void testUpdateArtist_TestCase1(String ArtistID,  String Name, String Address, String Birthdate,String Bio, ArrayList<String> Occupations, ArrayList<String> Genres, ArrayList<String> Awards) 
+	{
+		Artist TestData1 = new Artist(ArtistID, Name, Address, Birthdate, Bio, Occupations, Genres, Awards);
+		boolean data = TestData1.Update();
+		Assert.assertTrue(data == false);
+	}
 }
 
 //JUnit 5 user guide
