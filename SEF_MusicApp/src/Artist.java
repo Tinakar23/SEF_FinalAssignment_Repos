@@ -3,6 +3,7 @@ import java.util.regex.*;
 import java.io.*;
 import java.util.*;
 
+/// Artist class.
 public class Artist {
 
 	private String ID;
@@ -14,8 +15,10 @@ public class Artist {
 	private ArrayList<String> Genres;
 	private ArrayList<String> Awards;
 
+	/// Constructor of the Artist Class.
 	public Artist(String id, String name, String address, String birthdate, String bio, ArrayList<String> occupations,
-			ArrayList<String> genres, ArrayList<String> awards) {
+			ArrayList<String> genres, ArrayList<String> awards) 
+	{
 		ID = id;
 		Name = name;
 		Address = address;
@@ -26,6 +29,7 @@ public class Artist {
 		Awards = awards;
 	}
 
+	/// Function to check all the precondition to add the artist to file.
 	private boolean preConditionsToAddArtist() {
 		boolean isValidArtistId = false;
 		boolean isValidDate = false;
@@ -46,6 +50,7 @@ public class Artist {
 				&& isValidGeners;
 	}
 
+	/// Function to validate the Artist genres and return true if valid and false if not valid genres.
 	private boolean validateGenres(boolean isValidGeners) {
 		if (this.Genres.size() >= 2 && this.Genres.size() <= 5
 				&& !(this.Genres.contains("rock") && this.Genres.contains("pop"))) {
@@ -54,6 +59,7 @@ public class Artist {
 		return isValidGeners;
 	}
 
+	/// Function to validate the Artist awards and return true if valid and false if not valid awards.
 	private boolean validateAwards(boolean isValidAwards) {
 		if (this.Awards.size() <= 3) {
 			int invalidDataCount = 0;
@@ -74,6 +80,7 @@ public class Artist {
 		return isValidAwards;
 	}
 
+	/// Function to validate the Artist occupation and return true if valid and false if not valid occcupation.
 	private boolean validateOccupation(boolean isValidOccupation) {
 		if (!this.Occupations.isEmpty() && this.Occupations.size() <= 5) {
 			isValidOccupation = true;
@@ -81,6 +88,7 @@ public class Artist {
 		return isValidOccupation;
 	}
 
+	/// Function to validate the Artist bio and return true if valid and false if not valid bio.
 	private boolean validateBio(boolean isValidBio) {
 		String[] bioParts = this.Bio.split("\\s+");
 		if (bioParts.length >= 10 && bioParts.length <= 30) {
@@ -89,6 +97,7 @@ public class Artist {
 		return isValidBio;
 	}
 
+	/// Function to validate the Artist address and return true if valid and false if not valid address.
 	private boolean validAddress(boolean isValidAddress) {
 		String[] addressParts = this.Address.split("\\|");
 		if (addressParts.length == 3) {
@@ -97,35 +106,39 @@ public class Artist {
 		return isValidAddress;
 	}
 
+	/// Function to validate the Artist birthdate and return true if valid and false if not valid birthdate.
 	private boolean validBirthDate() {
 		boolean isValidDate;
-		String datePattern = "^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-\\d{4}$$";
+		String datePattern = "^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-\\d{4}$$"; //// REGEX to check the date format. 
 		Pattern dateRegex = Pattern.compile(datePattern);
 		Matcher dateMatcher = dateRegex.matcher(this.Birthdate);
 		isValidDate = dateMatcher.matches();
 		return isValidDate;
 	}
 
+	/// Function to validate the Artist ID and return true if valid and false if not valid id.
 	private boolean validArtistId() {
 		boolean isValidArtistId;
-		String artistIdPatter = "^^[5-9]{3}[A-Z]{5}[!@#$%^&*()_+=<>?/{}\\[\\]|]{2}$";
+		String artistIdPatter = "^^[5-9]{3}[A-Z]{5}[!@#$%^&*()_+=<>?/{}\\[\\]|]{2}$"; ///// REGEX to chceck the ID.
 		Pattern artistIdRegex = Pattern.compile(artistIdPatter);
 		Matcher artistIdMatcher = artistIdRegex.matcher(this.ID);
 		isValidArtistId = artistIdMatcher.matches();
 		return isValidArtistId;
 	}
 
+	//// Function to add the artist details to file after validating the inputs.
 	public boolean addArtist() {
 		boolean isAddArtistSuccess = false;
 		boolean validDetails = this.preConditionsToAddArtist();
 
 		if (validDetails) {
-			File fileObject = new File("fileName.txt");
+			File fileObject = new File("fileName.txt"); /// to create a file instance.
 			try {
 				if (!fileObject.exists()) {
-					fileObject.createNewFile();
+					fileObject.createNewFile(); /// to create a new file if not exits
 				}
 
+				/// to write the content in to the file.
 				FileWriter fileWrite = new FileWriter("fileName.txt", true);
 				fileWrite.write("ID: " + this.ID + "\n");
 				fileWrite.write("Name: " + this.Name + "\n");
@@ -136,128 +149,74 @@ public class Artist {
 				this.writeArrayList(this.Genres, fileWrite, "Genres: ");
 				this.writeArrayList(this.Awards, fileWrite, "Awards: ");
 				fileWrite.write("\n");
-				fileWrite.close();
+				fileWrite.close();	/// to close the file
 				isAddArtistSuccess = true;
+				
 			} catch (IOException e) {
 				System.out.println("Error occured");
 			}
 		}
-		return isAddArtistSuccess;
+		return isAddArtistSuccess;   //// return true if the artist was added to the file  and false if not added
 
 	}
 
+	/// Function to write the array list in to the file by the custom format.
 	private void writeArrayList(ArrayList<String> list, FileWriter writer, String title) {
 		String element = title;
 		for (int i = 0; i < list.size(); i++) {
 			String seperator = title == "Awards: " ? "|" : ",";
 			element += list.get(i) + seperator;
+			
 		}
+
+		String newElement =  element.substring(0, element.length() - 1);
 		try {
-			writer.write(element + "\n");
+			writer.write(newElement + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public boolean updateArtist()
-	{
-		boolean validDetails = this.preConditionsToAddArtist();
-		ArrayList<String> dataFromFile = new ArrayList<String>();
-		try(BufferedReader bufferReader = new BufferedReader(new FileReader("fileName.txt"));
-		FileWriter bufferWriter = new FileWriter("fileName.txt.tmp"))
-		{
-			String line;
-			bufferWriter.write("ID: " + this.ID +"\n");
-			bufferWriter.write("Name: " + this.Name+"\n");
-			bufferWriter.write("Birthdate: " + this.Birthdate+"\n");
-			bufferWriter.write("Address: " + this.Address+"\n");
-			bufferWriter.write("Bio: " + this.Bio+"\n");
-			while(( line = bufferReader.readLine())!= null)
-			{	
-				if(line.startsWith("Occupation: "))
-				{
-					Date birthdate = new SimpleDateFormat("dd-mm-yyyy").parse(this.Birthdate);
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(birthdate);
-					
-					int year = calendar.get(Calendar.YEAR);
-					if((year >= 2000))
-					{
-						this.writeArrayList(this.Occupations, bufferWriter, "Occupation: ");
-					}					
-				}
-				else if(line.startsWith("Awards: "))
-				{
-					for(String award : this.Awards)
-					{
-						String[] newAwardParts = award.split(",");
-						String[]oldAwardParts = award.split(","):
-						if(newAwardParts.length == 2)
-						{
-							int year = Integer.parseInt(newAwardParts[0]);
-							if ((year >= 2000))
-							{
-								newAwardParts[0
-							}
-						}
-					}
-				}
-				else
-				{
-					bufferWriter.write(line);
-				}
-			}
-		}
-		
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		} 
-		catch (ParseException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		if(dataFromFile.contains(this.ID) && validDetails)
-		{
-			
-		}
-			return true;	
-	}
-
-	public boolean Update() {
+	
+	/// Function to update the artist details in to the file.
+	public boolean UpdateArtist() {
 
 		boolean isUpdated = false;
 		try 
 		{
-			Scanner scanner = new Scanner(new File("updatedFile.txt"));
+			Scanner scanner = new Scanner(new File("fileName.txt")); /// to read the existing file
 			int Birthdate = 0;
 			boolean isMatchedData = false;
-			// scanner.nextLine(); // Skip the first line
 
 			StringBuilder newContent = new StringBuilder();
-			String newContentString = "Occuption: ";
+			String newAwardString = "Awards: ";
 			List<String> awardTitle = new ArrayList<String>();
-			while (scanner.hasNextLine()) 
+			while (scanner.hasNextLine())   //// to read each line in loop
 			{
 				String line = scanner.nextLine();
-				if(line.startsWith("ID") )
+				
+				//// block to update the ID
+				if(line.startsWith("ID") ) //// to check whether the lines starts with ID
 				{
 					String Id = line.substring(line.indexOf(": ") + 2);
 					isMatchedData = (Id.equals(this.ID)) ? true : false;
 					newContent.append(line).append("\n");					
 				}
-				if(line.startsWith("Name"))
+				
+				//// Block to update the name
+				if(line.startsWith("Name"))///to check whether the lines starts with Name
 				{
 					newContent.append(line).append("\n");
 				}
-				if(line.startsWith("Bio"))
+				
+				/// block to update the bio
+				if(line.startsWith("Bio"))///to check whether the lines starts with Bio
 				{
 					if( this.Bio != ""  && isMatchedData)
 					{
 						if(this.validateBio(false))
 						{
-						String newBioLine = "Bio: " + this.Bio +"\n";
+						String newBioLine = "Bio: " + this.Bio;
 						newContent.append(newBioLine).append("\n");
 						isUpdated = true;
 						}
@@ -272,7 +231,9 @@ public class Artist {
 						newContent.append(line).append("\n");
 					}
 				}
-				if(line.startsWith("Birthdate"))
+				
+				//// block to update the birthdate.
+				if(line.startsWith("Birthdate"))/// to check whether the lines starts with Birthdate
 				{
 					String birthDate = line.substring(line.indexOf(": ") + 2);
 					Birthdate = this.GetYear(birthDate);
@@ -280,7 +241,7 @@ public class Artist {
 					{
 						if(this.validBirthDate())
 						{							
-						String newBirthdate = "Birthdate: " + this.Birthdate + "\n";
+						String newBirthdate = "Birthdate: " + this.Birthdate;
 						newContent.append(newBirthdate).append("\n");
 						isUpdated = true;
 						}
@@ -295,13 +256,15 @@ public class Artist {
 						newContent.append(line).append("\n");
 					}
 				}
-				if(line.startsWith("Address"))
+				
+				/// block to update the address.
+				if(line.startsWith("Address"))/// to check whether the lines starts with Address
 				{
 					if(this.Address != "" && isMatchedData)
 					{
 						if(this.validAddress(false))
 						{							
-						String newAddress = "Address: " + this.Address + "\n";
+						String newAddress = "Address: " + this.Address;
 						newContent.append(newAddress).append("\n");
 						isUpdated = true;
 						}
@@ -316,7 +279,9 @@ public class Artist {
 						newContent.append(line).append("\n");
 					}
 				}
-				if(line.startsWith("Genres"))
+				
+				/// block to update the genres.
+				if(line.startsWith("Genres")) ///to check whether the lines starts with Genres
 				{
 					if(!this.Genres.isEmpty() && isMatchedData)
 					{
@@ -337,7 +302,9 @@ public class Artist {
 						newContent.append(line).append("\n");
 					}
 				}
-				if ( line.startsWith("Award") && isMatchedData) 
+				
+				/// block to update the awards
+				if ( line.startsWith("Award")) ////  to check whether the lines starts with Award
 				{
 					if(this.Awards != null && !this.Awards.isEmpty() && isMatchedData)
 					{
@@ -364,12 +331,12 @@ public class Artist {
 								if (subParts.length == 2 && Integer.parseInt(subParts[0]) > 2000) 
 								{
 									subParts[1] = awardTitleArray[i];
+									isUpdated = true;
 								}
-								newContentString += String.join(",", subParts) + "|";
+								newAwardString += String.join(",", subParts) + "|";
 							}
-							newContentString = newContentString.substring(0, newContentString.length() - 1);
-							newContent.append(String.join("|", newContentString)).append("\n");
-							isUpdated = true;
+							newAwardString = newAwardString.substring(0, newAwardString.length() - 1);
+							newContent.append(String.join("|", newAwardString)).append("\n");
 						}
 					}
 					else	
@@ -377,7 +344,9 @@ public class Artist {
 						newContent.append(line).append("\n");
 					}
 				}
-				if (line.startsWith("Occupation")) 
+				
+				/// block to update the occupations
+				if (line.startsWith("Occupation")) ///to check whether the lines starts with Occupation
  				{
 					if(!this.Occupations.isEmpty() && isMatchedData)
 					{
@@ -401,11 +370,16 @@ public class Artist {
 						newContent.append(line).append("\n");
 					}
 				}
+				if(line.isEmpty())
+				{
+					newContent.append("\n");
+				}
 			}
 
+			/// to check is all the inputs were valid and to update it in the file.
 			if(isUpdated)
 			{			
-				FileWriter fileWriter = new FileWriter("updatedFile.txt", false);
+				FileWriter fileWriter = new FileWriter("fileName.txt", false); /// to clear the file and update the new content.
 				BufferedWriter writer = new BufferedWriter(fileWriter);
 				writer.write(newContent.toString());
 				writer.close();
@@ -417,6 +391,9 @@ public class Artist {
 		}
 		return isUpdated;
 	}
+	
+	
+	/// function to get the year from tyhe birthdate of the artist
 	private int GetYear(String birthDate)
 	{
 		Date converted_birthDate = new Date();
@@ -437,4 +414,3 @@ public class Artist {
 
 
 
-//https://stackoverflow.com/questions/12970484/java-for-loop-with-an-arraylist
